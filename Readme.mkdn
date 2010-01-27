@@ -4,6 +4,8 @@ Simple rack middleware for serving up [CoffeeScript](http://jashkenas.github.com
 
 ## Usage
 
+The options behave similarly to Rack::Static:
+
     use Rack::Coffee, {
         :root => '/path/to/directory/above/url',  # defaults to Dir.pwd
         :url => '/javascipts'                     # defaults to '/javascripts'
