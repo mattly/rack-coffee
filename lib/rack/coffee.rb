@@ -1,36 +1,34 @@
-require 'pathname'
-require 'time'
 require 'coffee-script'
 require 'rack/file'
 require 'rack/utils'
 
-module Rack
-  class Coffee
-    
-    attr_accessor :url, :root
-    
-    def initialize(app, opts={})
-      @app = app
-      @url = opts[:url] || '/javascripts'
-      @root = Pathname.new(opts[:root] || Dir.pwd)
-      @server = Rack::File.new(root)
-    end
-    
-    def call(env)
-      path = Utils.unescape(env["PATH_INFO"])
-      return [403, {"Content-Type" => "text/plain"}, ["Forbidden\n"]] if path.include?('..')
-      if (path.index(url) == 0) and (path =~ /\.js$/)
-        coffee = root + path.sub(/\.js$/,'.coffee').sub(/^\//,'')
-        if coffee.file?
-          headers = {"Content-Type" => "application/javascript", "Last-Modified" => coffee.mtime.httpdate}
-          [200, headers, [CoffeeScript.compile(coffee.read)]]
-        else
-          @server.call(env)
-        end
-      else
-        @app.call(env)
-      end
-    end
-    
+class Rack::Coffee
+
+  attr_accessor :url, :root
+
+  DEFAULTS = {:static => true}
+
+  def initialize(app, opts = {})
+    opts = DEFAULTS.merge(opts)
+    @app = app
+    @url = opts[:url] || '/javascripts'
+    @root = opts[:root] || Dir.pwd
+    @server = opts[:static] ? Rack::File.new(root) : app
   end
+
+  def call(env)
+    path = Rack::Utils.unescape(env["PATH_INFO"])
+    return [403, {"Content-Type" => "text/plain"}, ["Forbidden\n"]] if path.include?('..')
+    return @app.call(env) unless path.index(url) == 0 && path =~ /\.js$/
+    coffee = File.join(root, path.sub(/\.js$/, '.coffee'))
+    if File.file?(coffee)
+      headers = {
+        'Content-Type' => 'application/javascript',
+        'Last-Modified' => File.mtime(coffee).httpdate}
+      [200, headers, [CoffeeScript.compile(File.read(coffee))]]
+    else
+      @server.call(env)
+    end
+  end
+
 end
