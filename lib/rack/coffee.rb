@@ -4,14 +4,14 @@ require 'rack/utils'
 
 class Rack::Coffee
 
-  attr_accessor :url, :root
+  attr_accessor :urls, :root
 
   DEFAULTS = {:static => true}
 
   def initialize(app, opts = {})
     opts = DEFAULTS.merge(opts)
     @app = app
-    @url = opts[:url] || '/javascripts'
+    @urls = *opts[:urls] || '/javascripts'
     @root = opts[:root] || Dir.pwd
     @server = opts[:static] ? Rack::File.new(root) : app
   end
@@ -19,7 +19,7 @@ class Rack::Coffee
   def call(env)
     path = Rack::Utils.unescape(env["PATH_INFO"])
     return [403, {"Content-Type" => "text/plain"}, ["Forbidden\n"]] if path.include?('..')
-    return @app.call(env) unless path.index(url) == 0 && path =~ /\.js$/
+    return @app.call(env) unless urls.any? {|url| path.index(url) == 0} && path =~ /\.js$/
     coffee = File.join(root, path.sub(/\.js$/, '.coffee'))
     if File.file?(coffee)
       headers = {

@@ -53,7 +53,7 @@ class RackCoffeeTest < Test::Unit::TestCase
   end
   
   def test_serves_coffeescripts_with_alternate_options
-    result = request({:root => File.expand_path(File.dirname(__FILE__)), :url => "/other_javascripts"}).get("/other_javascripts/test.js")
+    result = request({:root => File.expand_path(File.dirname(__FILE__)), :urls => "/other_javascripts"}).get("/other_javascripts/test.js")
     assert_equal 200, result.status
     assert_match /alert\(\"other coffee\"\)\;/, result.body
   end
