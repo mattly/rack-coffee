@@ -1,6 +1,6 @@
 # rack-coffee
 
-Simple rack middleware for serving up [CoffeeScript](http://jashkenas.github.com/coffee-script/) files as compiled javascript.
+Simple rack middleware for serving up [CoffeeScript][coffeescript] files as compiled javascript.
 
 ## Usage
 
@@ -14,10 +14,15 @@ The options behave similarly to Rack::Static:
 
 By default, rack/coffee will use a Rack::File to serve any static assets found in this path; you may give `:static => false` to have misses pass through to your app.
 
+For rails, presuming you've required 'rack/coffee' somehow, stick this in the Rails initializer config block:
+
+    config.middleware.use Rack::Coffee, :root => "#{RAILS_ROOT}/public"
+
+Note however that by default this will not play nicely with `javascript_include_tag`'s `:cache` option, you would need to compile your .coffee files before deploying. Alternately, check out the [BistroCar][bistrocar] rails plugin that plays nicely with rails asset handling.
 
 ## Bugs?
 
-* Let me know here: [Issue Tracking](http://github.com/mattly/rack-coffee/issues)
+* Let me know here: [Issue Tracking][issues]
 
 ## Requirements
 
@@ -26,7 +31,10 @@ By default, rack/coffee will use a Rack::File to serve any static assets found i
 
 ## History
 
-* January 26, 2010: First public release 0.1/
+* January 27, 2010: release 0.1.1
+    * remove dependency on Pathname, oh if only it were stdlib instead of extlib
+
+* January 26, 2010: First public release 0.1.
 
 ## Copyright
 
@@ -48,3 +56,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[coffeescript]: http://jashkenas.github.com/coffee-script/
+[bistrocar]: http://github.com/jnicklas/bistro_car
+[issues]: http://github.com/mattly/rack-coffee/issues
