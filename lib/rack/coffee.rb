@@ -8,12 +8,14 @@ module Rack
     F = ::File
     
     attr_accessor :url, :root
+    DEFAULTS = {:static => true}
     
     def initialize(app, opts={})
+      opts = DEFAULTS.merge(opts)
       @app = app
       @url = opts[:url] || '/javascripts'
       @root = opts[:root] || Dir.pwd
-      @server = Rack::File.new(root)
+      @server = opts[:static] ? Rack::File.new(root) : app
     end
     
     def call(env)

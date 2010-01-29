@@ -5,11 +5,15 @@ Simple rack middleware for serving up [CoffeeScript](http://jashkenas.github.com
 ## Usage
 
 The options behave similarly to Rack::Static:
-
+    
+    require 'rack/coffee'
     use Rack::Coffee, {
         :root => '/path/to/directory/above/url',  # defaults to Dir.pwd
         :url => '/javascipts'                     # defaults to '/javascripts'
     }
+
+By default, rack/coffee will use a Rack::File to serve any static assets found in this path; you may give `:static => false` to have misses pass through to your app.
+
 
 ## Bugs?
 
