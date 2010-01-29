@@ -2,15 +2,15 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rack-coffee}
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matthew Lyon"]
-  s.date = %q{2010-01-27}
+  s.date = %q{2010-01-28}
   s.description = %q{Rack Middlware for compiling and serving .coffee files using coffee-script; "/javascripts/app.js" compiles and serves "/javascipts/app.coffee". If there is no .coffee file, passes to Rack::File in case there's a .js file (or other asset) with the requested url.
 }
   s.email = %q{matt@flowerpowered.com}
-  s.files = ["Readme.mkdn", "lib/rack/coffee.rb", "rack-coffee.gemspec", "test/javascripts/static.js", "test/javascripts/test.coffee", "test/other_javascripts/test.coffee", "test/rack_coffee_test.rb"]
+  s.files = ["Rakefile", "Readme.mkdn", "lib/rack/coffee.rb", "rack-coffee.gemspec", "test/javascripts/static.js", "test/javascripts/test.coffee", "test/other_javascripts/test.coffee", "test/rack_coffee_test.rb"]
   s.homepage = %q{http://github.com/mattly/rack-coffee}
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{rack-coffee}

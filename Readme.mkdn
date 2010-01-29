@@ -31,7 +31,10 @@ Note however that by default this will not play nicely with `javascript_include_
 
 ## History
 
-* January 27, 2010: release 0.1.1
+* January 27, 2010: release 0.2 BACKWARDS INCOMPATIBLE
+    * replace :url parameter in favor of :urls, now it behaves similarly to Rack::Static (Brian Mitchell)
+    * add :static parameter, which when false will disable automatic asset serving of url misses via Rack::File, instead passing through to the app.
+    * improve documentation for Rails
     * remove dependency on Pathname, oh if only it were stdlib instead of extlib
 
 * January 26, 2010: First public release 0.1.

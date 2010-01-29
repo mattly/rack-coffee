@@ -20,7 +20,7 @@ else
   task "rack-coffee.gemspec" do
     spec = Gem::Specification.new do |s|
       s.name            = "rack-coffee"
-      s.version         = "0.1.0"
+      s.version         = "0.2.0"
       s.platform        = Gem::Platform::RUBY
       s.summary         = "serve up coffeescript from rack middleware"
       
