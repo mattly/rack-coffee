@@ -8,17 +8,23 @@ The options behave similarly to Rack::Static:
     
     require 'rack/coffee'
     use Rack::Coffee, {
-        :root => '/path/to/directory/above/url',  # defaults to Dir.pwd
-        :urls => '/javascipts'                     # defaults to '/javascripts'
+        :root => '/path/to/directory/above/url',
+        :urls => '/javascipts'
     }
-
-By default, rack/coffee will use a Rack::File to serve any static assets found in this path; you may give `:static => false` to have misses pass through to your app.
-
+    
 For rails, presuming you've required 'rack/coffee' somehow, stick this in the Rails initializer config block:
 
     config.middleware.use Rack::Coffee, :root => "#{RAILS_ROOT}/public"
 
 Note however that by default this will not play nicely with `javascript_include_tag`'s `:cache` option, you would need to compile your .coffee files before deploying. Alternately, check out the [BistroCar][bistrocar] rails plugin that plays nicely with rails asset handling.
+
+## Options
+
+* `:root`: the directory above `urls`. Defaults to `Dir.pwd`.
+* `:urls`: the directories in which to look for coffeescripts. May specify a string or an array of strings. Defaults to `/javascripts`.
+* `:static`: Whether to serve any static assets found in your urls (via `Rack::File`). Defaults to `true`; Specify false to pass through to your app.
+* `:cache`: Sets a `Cache-Control` header if truthy, `public` if set to `:public`
+* `:ttl`: The default `max-age` value for the `Cache-Control` header. Defaults to `86400`.
 
 ## Bugs?
 
@@ -29,7 +35,15 @@ Note however that by default this will not play nicely with `javascript_include_
 * [CoffeeScript][coffee] and [node.js][node] which coffee-script now depends on.
 * [Rack][rack]
 
+## Thanks
+
+* Jeremy Ashkenas, for creating CoffeeScript
+* Brian Mitchell, for picking up the slack on handling the 0.5 update
+
 ## History
+
+* March 6, 2010: release 0.3.1
+    * options now take :cache and :ttl options for setting cache headers, should you decide to actually serve up hot coffeescripts outside of your development environment. Via Brian Mitchell. 
 
 * March 6, 2010: release 0.3 REQUIRES COFFEE-SCRIPT 0.5 OR HIGHER
     * CoffeeScript is now written in coffeescript. The included compiler is now based on node.js instead of being hosted in a ruby gem, so we're shelling out to the command-line interpreter. Thanks to [Brian Mitchell][binary42] for doing most of the dirty work, at least as far as ruby 1.9 is concerned.

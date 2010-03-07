@@ -15,6 +15,8 @@ module Rack
       @urls = *opts[:urls] || '/javascripts'
       @root = opts[:root] || Dir.pwd
       @server = opts[:static] ? Rack::File.new(root) : app
+      @cache = opts[:cache]
+      @ttl = opts[:ttl] || 86400
     end
     
     def brew(coffee)
@@ -28,6 +30,10 @@ module Rack
       coffee = F.join(root, path.sub(/\.js$/,'.coffee'))
       if F.file?(coffee)
         headers = {"Content-Type" => "application/javascript", "Last-Modified" => F.mtime(coffee).httpdate}
+        if @cache
+          headers['Cache-Control'] = "max-age=#{@ttl}"
+          headers['Cache-Control'] << ', public' if @cache == :public
+        end
         [200, headers, brew(coffee)]
       else
         @server.call(env)

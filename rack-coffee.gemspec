@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rack-coffee}
-  s.version = "0.3.0"
+  s.version = "0.3.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Matthew Lyon", "Brian Mitchell"]
@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/mattly/rack-coffee}
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{rack-coffee}
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{serve up coffeescript from rack middleware}
   s.test_files = ["test/rack_coffee_test.rb"]
 

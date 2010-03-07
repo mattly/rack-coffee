@@ -62,4 +62,19 @@ class RackCoffeeTest < Test::Unit::TestCase
     assert_match /alert\(\"other coffee\"\)\;/, result.body
   end
   
+  def test_caching_defaults
+    result = request({:cache => true}).get("/javascripts/test.js")
+    cache = result.headers["Cache-Control"]
+    assert_not_nil cache
+    assert_equal "max-age=86400", cache
+  end
+  
+  def test_caching_options
+    result = request({:cache => :public, :ttl => 300}).get("/javascripts/test.js")
+    cache = result.headers["Cache-Control"]
+    assert_not_nil cache
+    assert_match /max-age=300/, cache
+    assert_match /, public/, cache
+  end
+  
 end
