@@ -1,5 +1,4 @@
 require 'time'
-require 'coffee-script'
 require 'rack/file'
 require 'rack/utils'
 
@@ -18,6 +17,10 @@ module Rack
       @server = opts[:static] ? Rack::File.new(root) : app
     end
     
+    def brew(coffee)
+      IO.popen(['coffee', '-p', coffee].join(' '))
+    end
+    
     def call(env)
       path = Utils.unescape(env["PATH_INFO"])
       return [403, {"Content-Type" => "text/plain"}, ["Forbidden\n"]] if path.include?('..')
@@ -25,7 +28,7 @@ module Rack
       coffee = F.join(root, path.sub(/\.js$/,'.coffee'))
       if F.file?(coffee)
         headers = {"Content-Type" => "application/javascript", "Last-Modified" => F.mtime(coffee).httpdate}
-        [200, headers, [CoffeeScript.compile(F.read(coffee))]]
+        [200, headers, brew(coffee)]
       else
         @server.call(env)
       end

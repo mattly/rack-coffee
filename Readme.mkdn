@@ -1,6 +1,6 @@
 # rack-coffee
 
-Simple rack middleware for serving up [CoffeeScript][coffeescript] files as compiled javascript.
+Simple rack middleware for serving up [CoffeeScript][coffee] files as compiled javascript.
 
 ## Usage
 
@@ -26,10 +26,13 @@ Note however that by default this will not play nicely with `javascript_include_
 
 ## Requirements
 
-* coffee-script
-* rack
+* [CoffeeScript][coffee] and [node.js][node] which coffee-script now depends on.
+* [Rack][rack]
 
 ## History
+
+* March 6, 2010: release 0.3 REQUIRES COFFEE-SCRIPT 0.5 OR HIGHER
+    * CoffeeScript is now written in coffeescript. The included compiler is now based on node.js instead of being hosted in a ruby gem, so we're shelling out to the command-line interpreter. Thanks to [Brian Mitchell][binary42] for doing most of the dirty work, at least as far as ruby 1.9 is concerned.
 
 * January 27, 2010: release 0.2 BACKWARDS INCOMPATIBLE
     * replace :url parameter in favor of :urls, now it behaves similarly to Rack::Static (Brian Mitchell)
@@ -63,3 +66,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [coffeescript]: http://jashkenas.github.com/coffee-script/
 [bistrocar]: http://github.com/jnicklas/bistro_car
 [issues]: http://github.com/mattly/rack-coffee/issues
+[node]: http://nodejs.org/
+[rack]: http://rack.rubyforge.org/
+[binary42]: http://github.com/binary42

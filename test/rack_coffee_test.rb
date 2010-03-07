@@ -1,7 +1,11 @@
 require 'test/unit'
-require 'rack/mock'
-require 'rack/lint'
-require 'ruby-debug'
+begin
+  require 'rack/mock'
+  require 'rack/lint'
+rescue LoadError
+  require 'rubygems'
+  retry
+end
 
 require File.dirname(__FILE__) + "/../lib/rack/coffee"
 
