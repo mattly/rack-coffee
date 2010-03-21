@@ -17,10 +17,13 @@ module Rack
       @server = opts[:static] ? Rack::File.new(root) : app
       @cache = opts[:cache]
       @ttl = opts[:ttl] || 86400
+      @command = ['coffee', '-p']
+      @command.push('--no-wrap') if opts[:nowrap]
+      @command = @command.join(' ')
     end
     
     def brew(coffee)
-      IO.popen(['coffee', '-p', coffee].join(' '))
+      IO.popen("#{@command} #{coffee}")
     end
     
     def call(env)

@@ -77,4 +77,9 @@ class RackCoffeeTest < Test::Unit::TestCase
     assert_match /, public/, cache
   end
   
+  def test_no_wrap_option
+    result = request({:nowrap => true}).get("/javascripts/test.js")
+    assert_equal "alert(\"coffee\");", result.body
+  end
+  
 end
