@@ -81,7 +81,7 @@ THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-[coffeescript]: http://jashkenas.github.com/coffee-script/
+[coffee]: http://jashkenas.github.com/coffee-script/
 [bistrocar]: http://github.com/jnicklas/bistro_car
 [issues]: http://github.com/mattly/rack-coffee/issues
 [node]: http://nodejs.org/
