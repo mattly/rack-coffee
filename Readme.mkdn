@@ -25,6 +25,7 @@ Note however that by default this will not play nicely with `javascript_include_
 * `:static`: Whether to serve any static assets found in your urls (via `Rack::File`). Defaults to `true`; Specify false to pass through to your app.
 * `:cache`: Sets a `Cache-Control` header if truthy, `public` if set to `:public`
 * `:ttl`: The default `max-age` value for the `Cache-Control` header. Defaults to `86400`.
+* `:nowrap`: When `true`, disables the top-level function wrapper that CoffeeScript uses by default.
 
 ## Bugs?
 
@@ -41,6 +42,9 @@ Note however that by default this will not play nicely with `javascript_include_
 * Brian Mitchell, for picking up the slack on handling the 0.5 update
 
 ## History
+
+* March 21, 2010: release 0.3.2
+    * added :nowrap option to config, allowing the disabling of the top-level function wrapper. 
 
 * March 6, 2010: release 0.3.1
     * options now take :cache and :ttl options for setting cache headers, should you decide to actually serve up hot coffeescripts outside of your development environment. Via Brian Mitchell. 
