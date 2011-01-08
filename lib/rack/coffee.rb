@@ -32,6 +32,16 @@ module Rack
       return @app.call(env) unless urls.any?{|url| path.index(url) == 0} and (path =~ /\.js$/)
       coffee = F.join(root, path.sub(/\.js$/,'.coffee'))
       if F.file?(coffee)
+
+        modified_time = F.mtime(coffee)
+
+        if env['HTTP_IF_MODIFIED_SINCE']
+          cached_time = Time.parse(env['HTTP_IF_MODIFIED_SINCE'])
+          if modified_time <= cached_time
+            return [304, {}, 'Not modified']
+          end
+        end
+
         headers = {"Content-Type" => "application/javascript", "Last-Modified" => F.mtime(coffee).httpdate}
         if @cache
           headers['Cache-Control'] = "max-age=#{@ttl}"

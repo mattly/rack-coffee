@@ -46,6 +46,13 @@ class RackCoffeeTest < Test::Unit::TestCase
     assert_equal "Hello World", result.body
   end
   
+  def test_not_modified_response
+    modified_time = File.mtime("#{@root}/javascripts/test.coffee").httpdate
+    result = request.get("/javascripts/test.js", 'HTTP_IF_MODIFIED_SINCE' => modified_time )
+    assert_equal 304, result.status
+    assert_equal 'Not modified', result.body
+  end
+  
   def test_does_not_allow_directory_traversal
     result = request.get("/../README")
     assert_equal 403, result.status
