@@ -86,7 +86,7 @@ class RackCoffeeTest < Test::Unit::TestCase
   
   def test_no_wrap_option
     result = request({:nowrap => true}).get("/javascripts/test.js")
-    assert_equal "alert(\"coffee\");", result.body
+    assert_equal "alert(\"coffee\");", result.body.chomp
   end
   
 end

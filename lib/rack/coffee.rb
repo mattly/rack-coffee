@@ -18,7 +18,7 @@ module Rack
       @cache = opts[:cache]
       @ttl = opts[:ttl] || 86400
       @command = ['coffee', '-p']
-      @command.push('--no-wrap') if opts[:nowrap]
+      @command.push('--bare') if opts[:nowrap]
       @command = @command.join(' ')
     end
     
