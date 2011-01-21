@@ -43,6 +43,11 @@ Note however that by default this will not play nicely with `javascript_include_
 
 ## History
 
+* January 21, 2011: release 0.3.3
+    Two changes by [Jonathan Baudanza][jbaudanza]:
+    * changed --nowrap to --bare, per a recent change to coffee-script. You may use :nowrap or :bare to indicate you want this
+    * return 304 NOT MODIFIED for caching purposes
+
 * March 21, 2010: release 0.3.2
     * added :nowrap option to config, allowing the disabling of the top-level function wrapper. 
 
@@ -62,7 +67,7 @@ Note however that by default this will not play nicely with `javascript_include_
 
 ## Copyright
 
-Copyright (C) 2010 Matthew Lyon <matt@flowerpowered.com>
+Copyright (C) 2010 Matthew Lyon <matthew@lyonheart.us>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -87,3 +92,4 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [node]: http://nodejs.org/
 [rack]: http://rack.rubyforge.org/
 [binary42]: http://github.com/binary42
+[jbaudanza]: https://github.com/jbaudanza
