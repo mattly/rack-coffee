@@ -89,4 +89,9 @@ class RackCoffeeTest < Test::Unit::TestCase
     assert_equal "alert(\"coffee\");", result.body.chomp
   end
   
+  def test_bare_option
+    result = request({:bare => true}).get("/javascripts/test.js")
+    assert_equal "alert(\"coffee\");", result.body.chomp
+  end
+  
 end
