@@ -55,16 +55,13 @@ module Rack
       coffee = F.join(root, path.sub(/\.js$/,'.coffee'))
       if @join == F.basename(coffee, '.coffee')
         dir = F.dirname(coffee)
-
         modified_time = Dir["#{dir}/*.coffee"].map{|f| F.mtime(f) }.max
-        return not_modified if check_modified_time(env, modified_time)
-
-        [200, headers_for(modified_time), brew("-j #{dir}/*")]
+        coffee = "-j #{dir}/*"
       elsif F.file?(coffee)
-
         modified_time = F.mtime(coffee)
+      end
+      if modified_time
         return not_modified if check_modified_time(env, modified_time)
-
         [200, headers_for(modified_time), brew(coffee)]
       else
         @server.call(env)
