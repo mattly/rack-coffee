@@ -17,6 +17,7 @@ module Rack
       @server = opts[:static] ? Rack::File.new(root) : app
       @cache = opts[:cache]
       @ttl = opts[:ttl] || 86400
+      @join = opts[:join]
       @command = ['coffee', '-p']
       @command.push('--bare') if opts[:nowrap] || opts[:bare]
       @command = @command.join(' ')
@@ -31,7 +32,11 @@ module Rack
       return [403, {"Content-Type" => "text/plain"}, ["Forbidden\n"]] if path.include?('..')
       return @app.call(env) unless urls.any?{|url| path.index(url) == 0} and (path =~ /\.js$/)
       coffee = F.join(root, path.sub(/\.js$/,'.coffee'))
-      if F.file?(coffee)
+      if @join == F.basename(coffee, '.coffee')
+        headers = {"Content-Type" => "application/javascript"}
+        [200, headers, brew("-j #{F.dirname(coffee)}/*")]
+
+      elsif F.file?(coffee)
 
         modified_time = F.mtime(coffee)
 
