@@ -93,5 +93,15 @@ class RackCoffeeTest < Test::Unit::TestCase
     result = request({:bare => true}).get("/javascripts/test.js")
     assert_equal "alert(\"coffee\");", result.body.chomp
   end
+
+  def test_join_option_with_join
+    result = request({:join => 'index'}).get("/javascripts/index.js")
+    assert_equal 200, result.status
+  end
+
+  def test_join_option_with_file
+    result = request({:join => 'index'}).get("/javascript/test.js")
+    assert_equal 200, result.status
+  end
   
 end
