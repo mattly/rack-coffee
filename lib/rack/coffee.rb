@@ -36,6 +36,18 @@ module Rack
       ctime && mtime <= Time.parse(ctime)
     end
 
+    def headers_for(mtime)
+      headers = {
+        'Content-Type' => 'application/javascript',
+        'Last-Modified' => mtime.httpdate
+      }
+      if @cache
+        headers['Cache-Control'] = "max-age=#{@ttl}"
+        headers['Cache-Control'] << ", public" if @cache == :public
+      end
+      headers
+    end
+
     def call(env)
       path = Utils.unescape(env["PATH_INFO"])
       return [403, {"Content-Type" => "text/plain"}, ["Forbidden\n"]] if path.include?('..')
@@ -47,20 +59,13 @@ module Rack
         modified_time = Dir["#{dir}/*.coffee"].map{|f| F.mtime(f) }.max
         return not_modified if check_modified_time(env, modified_time)
 
-        headers = {"Content-Type" => "application/javascript"}
-        [200, headers, brew("-j #{dir}/*")]
+        [200, headers_for(modified_time), brew("-j #{dir}/*")]
       elsif F.file?(coffee)
 
         modified_time = F.mtime(coffee)
-
         return not_modified if check_modified_time(env, modified_time)
 
-        headers = {"Content-Type" => "application/javascript", "Last-Modified" => F.mtime(coffee).httpdate}
-        if @cache
-          headers['Cache-Control'] = "max-age=#{@ttl}"
-          headers['Cache-Control'] << ', public' if @cache == :public
-        end
-        [200, headers, brew(coffee)]
+        [200, headers_for(modified_time), brew(coffee)]
       else
         @server.call(env)
       end
