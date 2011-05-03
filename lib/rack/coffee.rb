@@ -26,26 +26,34 @@ module Rack
     def brew(coffee)
       IO.popen("#{@command} #{coffee}")
     end
-    
+
+    def not_modified
+      [304, {}, ['Not modified']]
+    end
+
+    def check_modified_time(env, mtime)
+      ctime = env['HTTP_IF_MODIFIED_SINCE']
+      ctime && mtime <= Time.parse(ctime)
+    end
+
     def call(env)
       path = Utils.unescape(env["PATH_INFO"])
       return [403, {"Content-Type" => "text/plain"}, ["Forbidden\n"]] if path.include?('..')
       return @app.call(env) unless urls.any?{|url| path.index(url) == 0} and (path =~ /\.js$/)
       coffee = F.join(root, path.sub(/\.js$/,'.coffee'))
       if @join == F.basename(coffee, '.coffee')
-        headers = {"Content-Type" => "application/javascript"}
-        [200, headers, brew("-j #{F.dirname(coffee)}/*")]
+        dir = F.dirname(coffee)
 
+        modified_time = Dir["#{dir}/*.coffee"].map{|f| F.mtime(f) }.max
+        return not_modified if check_modified_time(env, modified_time)
+
+        headers = {"Content-Type" => "application/javascript"}
+        [200, headers, brew("-j #{dir}/*")]
       elsif F.file?(coffee)
 
         modified_time = F.mtime(coffee)
 
-        if env['HTTP_IF_MODIFIED_SINCE']
-          cached_time = Time.parse(env['HTTP_IF_MODIFIED_SINCE'])
-          if modified_time <= cached_time
-            return [304, {}, ['Not modified']]
-          end
-        end
+        return not_modified if check_modified_time(env, modified_time)
 
         headers = {"Content-Type" => "application/javascript", "Last-Modified" => F.mtime(coffee).httpdate}
         if @cache
