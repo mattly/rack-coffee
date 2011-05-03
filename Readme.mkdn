@@ -43,6 +43,9 @@ Note however that by default this will not play nicely with `javascript_include_
 
 ## History
 
+* May 3, 2011: release 1.0
+    * Make '304 NOT MODIFIED' return a correct response body on Ruby 1.9 [Aanand Prasad][aanand]
+
 * January 21, 2011: release 0.3.3
     Two changes by [Jonathan Baudanza][jbaudanza]:
     * changed --nowrap to --bare, per a recent change to coffee-script. You may use :nowrap or :bare to indicate you want this
@@ -93,3 +96,4 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [rack]: http://rack.rubyforge.org/
 [binary42]: http://github.com/binary42
 [jbaudanza]: https://github.com/jbaudanza
+[aanand]: https://github.com/aanand
