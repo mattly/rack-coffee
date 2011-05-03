@@ -26,6 +26,8 @@ Note however that by default this will not play nicely with `javascript_include_
 * `:cache`: Sets a `Cache-Control` header if truthy, `public` if set to `:public`
 * `:ttl`: The default `max-age` value for the `Cache-Control` header. Defaults to `86400`.
 * `:nowrap`: When `true`, disables the top-level function wrapper that CoffeeScript uses by default.
+* `:join`: Set to a string, f.e. "index" to concat all the .coffee files before
+  compiling
 
 ## Bugs?
 
@@ -43,8 +45,9 @@ Note however that by default this will not play nicely with `javascript_include_
 
 ## History
 
-* May 3, 2011: release 1.0
+* May 3, 2011: release 0.9
     * Make '304 NOT MODIFIED' return a correct response body on Ruby 1.9 [Aanand Prasad][aanand]
+    * Added 'join' option for concating your js
 
 * January 21, 2011: release 0.3.3
     Two changes by [Jonathan Baudanza][jbaudanza]:
