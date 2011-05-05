@@ -56,7 +56,7 @@ module Rack
       if @join == F.basename(coffee, '.coffee')
         dir = F.dirname(coffee)
         modified_time = Dir["#{dir}/*.coffee"].map{|f| F.mtime(f) }.max
-        coffee = "-j #{dir}/*"
+        coffee = "#{dir}/"
       elsif F.file?(coffee)
         modified_time = F.mtime(coffee)
       end

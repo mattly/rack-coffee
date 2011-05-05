@@ -45,6 +45,9 @@ Note however that by default this will not play nicely with `javascript_include_
 
 ## History
 
+* May 5, 2011: release 0.9.1
+    * Fix a bug in the 'join' option to reflect how command-line -p actually works
+
 * May 3, 2011: release 0.9
     * Make '304 NOT MODIFIED' return a correct response body on Ruby 1.9 [Aanand Prasad][aanand]
     * Added 'join' option for concating your js
