@@ -84,14 +84,9 @@ class RackCoffeeTest < Test::Unit::TestCase
     assert_match /, public/, cache
   end
   
-  def test_no_wrap_option
-    result = request({:nowrap => true}).get("/javascripts/test.js")
-    assert_equal "alert(\"coffee\");", result.body.chomp
-  end
-  
   def test_bare_option
     result = request({:bare => true}).get("/javascripts/test.js")
-    assert_equal "alert(\"coffee\");", result.body.chomp
+    assert_equal "\nalert(\"coffee\");", result.body.chomp
   end
 
   def test_join_option_with_join
