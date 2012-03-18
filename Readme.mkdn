@@ -54,6 +54,7 @@ Note however that by default this will not play nicely with
 
 * March 18, 2012:
     This release is **NOT BACKWARDS COMPATIBLE** with 0.9.x.
+    * A fair bit of refactoring to make the main call method easier to follow.
     * **BACKWARDS INCOMPATIBILITY** remove `:static` option. If you want to
       serve stock javascript files from the same directory as your coffeescript
       files, stick a Rack::File in your middleware stack after Rack::Coffee.

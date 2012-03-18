@@ -57,12 +57,12 @@ class RackCoffeeTest < Test::Unit::TestCase
   end
   
   def test_does_not_allow_directory_traversal
-    result = request.get("/../README")
+    result = request.get("/javascripts/../README.js")
     assert_equal 403, result.status
   end
   
   def test_does_not_allow_directory_travesal_with_encoded_periods
-    result = request.get("/%2E%2E/README")
+    result = request.get("/javascripts/%2E%2E/README.js")
     assert_equal 403, result.status
   end
   
