@@ -1,4 +1,3 @@
-require 'rake/rdoctask'
 require 'rake/testtask'
 
 desc "Run all the tests"
@@ -16,6 +15,7 @@ begin
 rescue LoadError
   # Too bad.
 else
+  desc "build the gemspec file"
   task "rack-coffee.gemspec" do
     spec = Gem::Specification.new do |s|
       s.name            = "rack-coffee"
@@ -46,6 +46,7 @@ else
     File.open("rack-coffee.gemspec", "w") { |f| f << spec.to_ruby }
   end
 
+  desc "build the gem"
   task :gem => ["rack-coffee.gemspec"] do
     sh "gem build rack-coffee.gemspec"
   end
