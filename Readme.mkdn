@@ -27,10 +27,13 @@ Note however that by default this will not play nicely with
 * `:root`: the directory above `urls`. Defaults to `Dir.pwd`.
 * `:urls`: the directories in which to look for coffeescripts. May specify
   a string or an array of strings. Defaults to `/javascripts`.
-* `:cache`: Sets a `Cache-Control` header if truthy, `public` if set to
-  `:public`
-* `:ttl`: The default `max-age` value for the `Cache-Control` header. Defaults
-  to `86400`.
+* `:cache-control`: Sets a `Cache-Control` header if present. Values are
+  interpreted like so:
+    - `true`: max-age=86400
+    - `3600`: max-age=3600
+    - `:public` or `'public'`: max-age=86400, public
+    - `[3600, :public]` or `%w(3600 public)`: max-age=3600, public
+    - `false` or `nil`: disables cache header
 * `:bare`: When `true`, disables the top-level function wrapper that
   CoffeeScript uses by default.
 * `:join`: Set to a string, f.e. "index" to concat all the .coffee files before
@@ -54,6 +57,8 @@ Note however that by default this will not play nicely with
 
 * March 18, 2012:
     This release is **NOT BACKWARDS COMPATIBLE** with 0.9.x.
+    * **BACKWARDS INCOMPATIBILITY** chance the `:cache` and `:ttl` options into
+      `:cache_control`. See documentation above for how the arguments work.
     * A fair bit of refactoring to make the main call method easier to follow.
     * **BACKWARDS INCOMPATIBILITY** remove `:static` option. If you want to
       serve stock javascript files from the same directory as your coffeescript

@@ -71,22 +71,33 @@ class RackCoffeeTest < Test::Unit::TestCase
     assert_equal 200, result.status
     assert_match /alert\(\"other coffee\"\)\;/, result.body
   end
-  
-  def test_caching_defaults
-    result = request({:cache => true}).get("/javascripts/test.js")
+
+  def test_cache_control_defaults
+    result = request({:cache_control => true}).get("/javascripts/test.js")
     cache = result.headers["Cache-Control"]
     assert_not_nil cache
     assert_equal "max-age=86400", cache
   end
-  
-  def test_caching_options
-    result = request({:cache => :public, :ttl => 300}).get("/javascripts/test.js")
+
+  def test_cache_control_with_options
+    result = request({:cache_control => %w(300 public)}).get("/javascripts/test.js")
     cache = result.headers["Cache-Control"]
     assert_not_nil cache
     assert_match /max-age=300/, cache
     assert_match /, public/, cache
   end
-  
+
+  def test_cache_control_option_parsing
+    [ [300, "max-age=300"], ['300', "max-age=300"],
+      [:public, "max-age=86400, public"], ['public', "max-age=86400, public"],
+      [[300, :public], "max-age=300, public"],
+      [%w(300 public), "max-age=300, public"]
+    ].each do |given, expected|
+      middleware = Rack::Coffee.new(DummyApp, {:cache_control => given})
+      assert_equal expected, middleware.cache_control
+    end
+  end
+
   def test_bare_option
     result = request({:bare => true}).get("/javascripts/test.js")
     assert_equal "alert(\"coffee\");", result.body.strip

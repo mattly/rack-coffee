@@ -1,26 +1,35 @@
 require 'time'
-require 'pathname'
-require 'rack/file'
-require 'rack/utils'
 
+# look folks, Pathname is in extlib. Learn it, use it.
+require 'pathname'
+
+require 'rack/utils'
 require 'coffee_script'
 
 module Rack
   class Coffee
-    F = ::File
+
+    CACHE_CONTROL_TTL_DEFAULT = 86400
 
     attr_accessor :app, :urls, :root,
-      :compile_without_closure, :concat_to_file
+      :compile_without_closure, :concat_to_file, :cache_control
 
     def initialize(app, opts={})
       @app = app
       @urls = [opts.fetch(:urls, '/javascripts')].flatten
       @root = Pathname.new(opts.fetch(:root) { Dir.pwd })
-      @cache = opts.fetch(:cache, false)
-      @ttl = opts.fetch(:ttl, 86400)
+      set_cache_header_opts(opts.fetch(:cache_control, false))
       @concat_to_file = opts.fetch(:join, false)
       @concat_to_file += '.coffee' if @concat_to_file
       @compile_without_closure = opts.fetch(:bare, false)
+    end
+
+    def set_cache_header_opts(given)
+      given = [given].flatten.map{|i| String(i) }
+      return if ['false', ''].include?(given.first)
+      ttl = given.first.to_i > 0 ? given.shift : CACHE_CONTROL_TTL_DEFAULT
+      pub = given.first == 'public' ? ', public' : ''
+      @cache_control = "max-age=#{ttl}#{pub}"
     end
 
     def brew(coffee)
@@ -45,10 +54,7 @@ module Rack
         'Content-Type' => 'application/javascript',
         'Last-Modified' => mtime.httpdate
       }
-      if @cache
-        headers['Cache-Control'] = "max-age=#{@ttl}"
-        headers['Cache-Control'] << ", public" if @cache == :public
-      end
+      headers['Cache-Control'] = @cache_control if @cache_control
       headers
     end
 
