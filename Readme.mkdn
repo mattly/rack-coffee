@@ -27,8 +27,6 @@ Note however that by default this will not play nicely with
 * `:root`: the directory above `urls`. Defaults to `Dir.pwd`.
 * `:urls`: the directories in which to look for coffeescripts. May specify
   a string or an array of strings. Defaults to `/javascripts`.
-* `:static`: Whether to serve any static assets found in your urls (via
-  `Rack::File`). Defaults to `true`; Specify false to pass through to your app.
 * `:cache`: Sets a `Cache-Control` header if truthy, `public` if set to
   `:public`
 * `:ttl`: The default `max-age` value for the `Cache-Control` header. Defaults
@@ -55,6 +53,10 @@ Note however that by default this will not play nicely with
 ## History
 
 * March 18, 2012:
+    This release is **NOT BACKWARDS COMPATIBLE** with 0.9.x.
+    * **BACKWARDS INCOMPATIBILITY** remove `:static` option. If you want to
+      serve stock javascript files from the same directory as your coffeescript
+      files, stick a Rack::File in your middleware stack after Rack::Coffee.
     * **BACKWARDS INCOMPATIBILITY** remove `:nowrap` option in favor of `:bare`
     * Use `execjs` gem instead of coffee-script command. Thanks to [jewel][] for
       kicking this off, even if I didn't use their code.

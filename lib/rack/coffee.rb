@@ -9,14 +9,11 @@ module Rack
     F = ::File
 
     attr_accessor :urls, :root, :bare
-    DEFAULTS = {:static => true}
 
     def initialize(app, opts={})
-      opts = DEFAULTS.merge(opts)
       @app = app
       @urls = *opts[:urls] || '/javascripts'
       @root = opts[:root] || Dir.pwd
-      @server = opts[:static] ? Rack::File.new(root) : app
       @cache = opts[:cache]
       @ttl = opts[:ttl] || 86400
       @join = opts[:join]
@@ -61,13 +58,11 @@ module Rack
       elsif F.file?(coffee)
         modified_time = F.mtime(coffee)
         brewed = brew(F.read(coffee))
-      end
-      if modified_time
-        return not_modified if check_modified_time(env, modified_time)
-        [200, headers_for(modified_time), [brewed]]
       else
-        @server.call(env)
+        return @app.call(env)
       end
+      return not_modified if check_modified_time(env, modified_time)
+      [200, headers_for(modified_time), [brewed]]
     end
   end
 end

@@ -10,42 +10,45 @@ end
 require File.dirname(__FILE__) + "/../lib/rack/coffee"
 
 class DummyApp
-  def call(env)  
-    [200, {"Content-Type" => "text/plain"}, ["Hello World"]]
+  def call(env)
+    [201, {"Content-Type" => "text/plain"}, ["Default Response"]]
   end
 end
 
 class RackCoffeeTest < Test::Unit::TestCase
-  
+
+  attr_reader :compiled_body_regex
+
   def setup
     @root = File.expand_path(File.dirname(__FILE__))
     @options = {:root => @root}
+    @compiled_body_regex = /function.*alert\(\"coffee\"\)\;.*this/m
   end
-  
+
   def request(options={})
     options = @options.merge(options)
     Rack::MockRequest.new(Rack::Lint.new(Rack::Coffee.new(DummyApp.new, options)))
   end
-  
+
   def test_serves_coffeescripts
     result = request.get("/javascripts/test.js")
     assert_equal 200, result.status
-    assert_match /alert\(\"coffee\"\)\;/, result.body
+    assert_match compiled_body_regex, result.body
     assert_equal File.mtime("#{@root}/javascripts/test.coffee").httpdate, result["Last-Modified"]
   end
-  
-  def test_serves_javascripts
+
+  def test_calls_app_on_coffee_miss
     result = request.get("/javascripts/static.js")
-    assert_equal 200, result.status
-    assert_equal %|alert("static");|, result.body
+    assert_equal 201, result.status
+    assert_equal "Default Response", result.body
   end
-  
+
   def test_calls_app_on_path_miss
     result = request.get("/hello")
-    assert_equal 200, result.status
-    assert_equal "Hello World", result.body
+    assert_equal 201, result.status
+    assert_equal "Default Response", result.body
   end
-  
+
   def test_not_modified_response
     modified_time = File.mtime("#{@root}/javascripts/test.coffee").httpdate
     result = request.get("/javascripts/test.js", 'HTTP_IF_MODIFIED_SINCE' => modified_time )
@@ -86,7 +89,7 @@ class RackCoffeeTest < Test::Unit::TestCase
   
   def test_bare_option
     result = request({:bare => true}).get("/javascripts/test.js")
-    assert_equal "\nalert(\"coffee\");", result.body.chomp
+    assert_equal "alert(\"coffee\");", result.body.strip
   end
 
   def test_join_option_with_join
@@ -95,8 +98,8 @@ class RackCoffeeTest < Test::Unit::TestCase
   end
 
   def test_join_option_with_file
-    result = request({:join => 'index'}).get("/javascript/test.js")
+    result = request({:join => 'index'}).get("/javascripts/test.js")
     assert_equal 200, result.status
+    assert_match compiled_body_regex, result.body.strip
   end
-  
 end
