@@ -19,16 +19,14 @@ else
   task "rack-coffee.gemspec" do
     spec = Gem::Specification.new do |s|
       s.name            = "rack-coffee"
-      s.version         = "0.9.1"
+      s.version         = "1.0.0"
       s.platform        = Gem::Platform::RUBY
       s.summary         = "serve up coffeescript from rack middleware"
 
-      s.description     = <<-EOF
+      s.description     = <<-EOF.gsub(/\s+/,' ').strip
         Rack Middlware for compiling and serving .coffee files using
         coffee-script; "/javascripts/app.js" compiles and serves
-        "/javascipts/app.coffee". If there is no .coffee file, can either pass to
-        Rack::File in case there's a .js file (or other asset) with the requested
-        url, or pass entirely.
+        "/javascipts/app.coffee".
       EOF
 
       s.files           = `git ls-files`.split("\n")

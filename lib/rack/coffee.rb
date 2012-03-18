@@ -11,7 +11,7 @@ module Rack
 
     CACHE_CONTROL_TTL_DEFAULT = 86400
 
-    attr_accessor :app, :urls, :root,
+    attr_accessor :app, :urls, :root, :cache_compile_dir,
       :compile_without_closure, :concat_to_file, :cache_control
 
     def initialize(app, opts={})
@@ -21,6 +21,11 @@ module Rack
       set_cache_header_opts(opts.fetch(:cache_control, false))
       @concat_to_file = opts.fetch(:join, false)
       @concat_to_file += '.coffee' if @concat_to_file
+      @cache_compile_dir = if opts.fetch(:cache_compile, false)
+        Pathname.new(Dir.mktmpdir)
+      else
+        nil
+      end
       @compile_without_closure = opts.fetch(:bare, false)
     end
 
@@ -32,7 +37,22 @@ module Rack
       @cache_control = "max-age=#{ttl}#{pub}"
     end
 
-    def brew(coffee)
+    def brew(file)
+      if cache_compile_dir
+        cache_file = cache_compile_dir + "#{file.mtime.to_i}_#{file.basename}"
+        if cache_file.file?
+          cache_file.read
+        else
+          brewed = compile(file.read)
+          cache_file.open('w') {|f| f << brewed }
+          brewed
+        end
+      else
+        compile(file.read)
+      end
+    end
+
+    def compile(coffee)
       CoffeeScript.compile coffee, {:bare => compile_without_closure }
     end
 
@@ -76,7 +96,7 @@ module Rack
       end
       last_modified = source_files.map {|file| file.mtime }.max
       return not_modified if check_modified_since(env, last_modified)
-      brewed = source_files.map{|file| brew(file.read) }.join("\n")
+      brewed = source_files.map{|file| brew(file) }.join("\n")
       [200, headers_for(last_modified), [brewed]]
     end
   end

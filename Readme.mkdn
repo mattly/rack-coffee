@@ -19,16 +19,18 @@ Rails initializer config block:
 
 Note however that by default this will not play nicely with
 `javascript_include_tag`'s `:cache` option, you would need to compile your
-.coffee files before deploying. Alternately, check out the
-[BistroCar][bistrocar] rails plugin that plays nicely with rails asset handling.
+.coffee files before deploying. Alternately, use the rails asset pipeline.
 
 ## Options
 
 * `:root`: the directory above `urls`. Defaults to `Dir.pwd`.
 * `:urls`: the directories in which to look for coffeescripts. May specify
   a string or an array of strings. Defaults to `/javascripts`.
-* `:cache-control`: Sets a `Cache-Control` header if present. Values are
-  interpreted like so:
+* `:cache-compile`: When truthy, will create and look for tempfiles with the
+  timestamp of the desired coffee file, and use those. Meant to speed up
+  development of projects with lots of coffee files.
+* `:cache-control`: Sets a `Cache-Control` header if present. Defaults to false.
+  Values are interpreted like so:
     - `true`: max-age=86400
     - `3600`: max-age=3600
     - `:public` or `'public'`: max-age=86400, public
@@ -57,6 +59,8 @@ Note however that by default this will not play nicely with
 
 * March 18, 2012:
     This release is **NOT BACKWARDS COMPATIBLE** with 0.9.x.
+    * added a `:cache_compile` option. If truthy, will cache the compiled coffee
+      to a tempfile timestamped with the modification time of the original.
     * **BACKWARDS INCOMPATIBILITY** chance the `:cache` and `:ttl` options into
       `:cache_control`. See documentation above for how the arguments work.
     * A fair bit of refactoring to make the main call method easier to follow.
@@ -132,7 +136,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 [coffee]: http://jashkenas.github.com/coffee-script/
 [coffee-gem]: https://github.com/josh/ruby-coffee-script
 [execjs]: https://github.com/sstephenson/execjs
-[bistrocar]: http://github.com/jnicklas/bistro_car
 [issues]: http://github.com/mattly/rack-coffee/issues
 [rack]: http://rack.rubyforge.org/
 [binary42]: http://github.com/binary42

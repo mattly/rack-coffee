@@ -113,4 +113,35 @@ class RackCoffeeTest < Test::Unit::TestCase
     assert_equal 200, result.status
     assert_match compiled_body_regex, result.body.strip
   end
+
+  def test_cache_compile_option
+    Dir.mktmpdir do |root|
+      FileUtils.mkdir "#{root}/javascripts"
+      app = Rack::Coffee.new(DummyApp, {:root => root, :cache_compile => true})
+      get = lambda{|path| Rack::MockRequest.new(Rack::Lint.new(app)).get(path) }
+      dir = app.cache_compile_dir
+      path = File.join(root, 'javascripts/cache_compile.coffee')
+      File.open(path,'w') {|f| f.write 'alert("version one")' }
+      oldtime = Time.local(2010, 11, 23, 19, 0)
+      File.utime(oldtime, oldtime, path)
+      # 1: is it creating the cached compiled file?
+      result = get.call('/javascripts/cache_compile.js')
+      cache_file = File.join(dir, "#{oldtime.to_i}_cache_compile.coffee")
+      assert File.exist?(cache_file)
+      assert_equal 200, result.status
+      # 2: will it presumably re-use it if it hasn't changed?
+      # yes, I'm using sleep in my tests. Deal with it.
+      cache_mtime = File.mtime(cache_file)
+      sleep 1
+      get.call('/javascripts/cache_compile.js')
+      assert_equal File.mtime(cache_file), cache_mtime
+      # 3: will it overwrite it if the underlying contents change?
+      File.open(path, 'w') {|f| f.write 'alert("version two")' }
+      result = get.call('/javascripts/cache_compile.js')
+      assert_equal 200, result.status
+      mtime = Time.parse(result.headers['Last-Modified'])
+      assert_not_equal mtime, oldtime
+      assert File.exist?(File.join(dir, "#{mtime.to_i}_cache_compile.coffee"))
+    end
+  end
 end
