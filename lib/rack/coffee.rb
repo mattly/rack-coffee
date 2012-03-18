@@ -2,13 +2,15 @@ require 'time'
 require 'rack/file'
 require 'rack/utils'
 
+require 'coffee_script'
+
 module Rack
   class Coffee
     F = ::File
-    
-    attr_accessor :urls, :root
+
+    attr_accessor :urls, :root, :bare
     DEFAULTS = {:static => true}
-    
+
     def initialize(app, opts={})
       opts = DEFAULTS.merge(opts)
       @app = app
@@ -18,13 +20,11 @@ module Rack
       @cache = opts[:cache]
       @ttl = opts[:ttl] || 86400
       @join = opts[:join]
-      @command = ['coffee', '-p']
-      @command.push('--bare') if opts[:nowrap] || opts[:bare]
-      @command = @command.join(' ')
+      @bare = opts.fetch(:bare) { false }
     end
-    
+
     def brew(coffee)
-      IO.popen("#{@command} #{coffee}")
+      CoffeeScript.compile coffee, {:bare => @bare }
     end
 
     def not_modified
@@ -55,14 +55,16 @@ module Rack
       coffee = F.join(root, path.sub(/\.js$/,'.coffee'))
       if @join == F.basename(coffee, '.coffee')
         dir = F.dirname(coffee)
-        modified_time = Dir["#{dir}/*.coffee"].map{|f| F.mtime(f) }.max
-        coffee = "#{dir}/"
+        files = Dir["#{dir}/*.coffee"]
+        modified_time = files.map{|f| F.mtime(f) }.max
+        brewed = files.map{|f| brew(F.read(f)) }.join("\n")
       elsif F.file?(coffee)
         modified_time = F.mtime(coffee)
+        brewed = brew(F.read(coffee))
       end
       if modified_time
         return not_modified if check_modified_time(env, modified_time)
-        [200, headers_for(modified_time), brew(coffee)]
+        [200, headers_for(modified_time), [brewed]]
       else
         @server.call(env)
       end
