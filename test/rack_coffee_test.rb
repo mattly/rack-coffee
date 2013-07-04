@@ -50,7 +50,7 @@ class RackCoffeeTest < Test::Unit::TestCase
   end
 
   def test_not_modified_response
-    modified_time = File.mtime("#{@root}/javascripts/test.coffee").httpdate
+    modified_time = (File.mtime("#{@root}/javascripts/test.coffee") + 1).httpdate
     result = request.get("/javascripts/test.js", 'HTTP_IF_MODIFIED_SINCE' => modified_time )
     assert_equal 304, result.status
     assert_equal 'Not modified', result.body
