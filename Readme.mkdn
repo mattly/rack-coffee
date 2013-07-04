@@ -3,6 +3,8 @@
 Simple rack middleware for serving up [CoffeeScript][coffee] files as compiled
 javascript.
 
+[![Build Status](https://travis-ci.org/mattly/rack-coffee.png?branch=master)](https://travis-ci.org/mattly/rack-coffee)
+
 ## Usage
 
 The options behave similarly to Rack::Static:
