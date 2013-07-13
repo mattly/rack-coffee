@@ -59,6 +59,13 @@ Note however that by default this will not play nicely with
 
 ## History
 
+* July 13, 2013:
+    Release 1.01. Add "Licence" field to gemspec. See [this][gemspec-license]
+    for more info. As someone who recently had to do a license audit,
+    I appreciate having this available.
+
+[gemspec-license]: http://www.benjaminfleischer.com/2013/07/12/make-the-world-a-better-place-put-a-license-in-your-gemspec/
+
 * March 18, 2012:
     This release is **NOT BACKWARDS COMPATIBLE** with 0.9.x.
     * added a `:cache_compile` option. If truthy, will cache the compiled coffee
