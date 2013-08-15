@@ -59,6 +59,11 @@ Note however that by default this will not play nicely with
 
 ## History
 
+* August 14, 2013:
+    Release 1.0.2. Fixes a bug whereby bad things happen when the cache-compile
+    directory is deleted. Thanks to [Tomas Rojas](https://github.com/tmsrjs) for
+    the fix.
+
 * July 13, 2013:
     Release 1.01. Add "Licence" field to gemspec. See [this][gemspec-license]
     for more info. As someone who recently had to do a license audit,
