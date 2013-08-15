@@ -144,4 +144,21 @@ class RackCoffeeTest < Test::Unit::TestCase
       assert File.exist?(File.join(dir, "#{mtime.to_i}_cache_compile.coffee"))
     end
   end
+
+  def test_does_not_break_if_cache_compile_dir_is_deleted
+    Dir.mktmpdir do |root|
+      FileUtils.mkdir "#{root}/javascripts"
+      app = Rack::Coffee.new(DummyApp, {:root => root, :cache_compile => true})
+      get = lambda{|path| Rack::MockRequest.new(Rack::Lint.new(app)).get(path) }
+      path = File.join(root, 'javascripts/cache_compile.coffee')
+      File.open(path,'w') {|f| f.write 'alert("version one")' }
+      dir = app.cache_compile_dir
+      get.call('/javascripts/cache_compile.js')
+      dir.rmtree
+      assert_nothing_raised Errno::ENOENT do
+        get.call('/javascripts/cache_compile.js')
+      end
+      assert dir.exist?
+    end
+  end
 end
