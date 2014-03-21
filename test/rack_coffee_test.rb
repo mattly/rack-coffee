@@ -35,6 +35,7 @@ class RackCoffeeTest < Test::Unit::TestCase
     assert_equal 200, result.status
     assert_match compiled_body_regex, result.body
     assert_equal File.mtime("#{@root}/javascripts/test.coffee").httpdate, result["Last-Modified"]
+    assert_equal result.body.size.to_s, result["Content-Length"]
   end
 
   def test_calls_app_on_coffee_miss

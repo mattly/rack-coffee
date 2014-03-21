@@ -70,10 +70,11 @@ module Rack
       cache_time && last_modified <= Time.parse(cache_time)
     end
 
-    def headers_for(mtime)
+    def headers_for(mtime, contents)
       headers = {
         'Content-Type' => 'application/javascript',
-        'Last-Modified' => mtime.httpdate
+        'Last-Modified' => mtime.httpdate,
+        'Content-Length' => contents.size.to_s
       }
       headers['Cache-Control'] = @cache_control if @cache_control
       headers
@@ -98,7 +99,7 @@ module Rack
       last_modified = source_files.map {|file| file.mtime }.max
       return not_modified if check_modified_since(env, last_modified)
       brewed = source_files.map{|file| brew(file) }.join("\n")
-      [200, headers_for(last_modified), [brewed]]
+      [200, headers_for(last_modified, brewed), [brewed]]
     end
   end
 end
