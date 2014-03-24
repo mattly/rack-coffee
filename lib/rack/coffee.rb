@@ -74,7 +74,7 @@ module Rack
       headers = {
         'Content-Type' => 'application/javascript',
         'Last-Modified' => mtime.httpdate,
-        'Content-Length' => contents.size.to_s
+        'Content-Length' => contents.bytesize.to_s
       }
       headers['Cache-Control'] = @cache_control if @cache_control
       headers

@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'test/unit'
 begin
   require 'rack/mock'
@@ -22,7 +24,7 @@ class RackCoffeeTest < Test::Unit::TestCase
   def setup
     @root = File.expand_path(File.dirname(__FILE__))
     @options = {:root => @root}
-    @compiled_body_regex = /function.*alert\(\"coffee\"\)\;.*this/m
+    @compiled_body_regex = /function.*alert\(\"coffee¿\"\)\;.*this/m
   end
 
   def request(options={})
@@ -35,7 +37,7 @@ class RackCoffeeTest < Test::Unit::TestCase
     assert_equal 200, result.status
     assert_match compiled_body_regex, result.body
     assert_equal File.mtime("#{@root}/javascripts/test.coffee").httpdate, result["Last-Modified"]
-    assert_equal result.body.size.to_s, result["Content-Length"]
+    assert_equal result.body.bytesize.to_s, result["Content-Length"]
   end
 
   def test_calls_app_on_coffee_miss
@@ -101,7 +103,7 @@ class RackCoffeeTest < Test::Unit::TestCase
 
   def test_bare_option
     result = request({:bare => true}).get("/javascripts/test.js")
-    assert_equal "alert(\"coffee\");", result.body.strip
+    assert_equal "alert(\"coffee¿\");", result.body.strip
   end
 
   def test_join_option_with_join
