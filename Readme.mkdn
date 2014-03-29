@@ -52,12 +52,12 @@ Note however that by default this will not play nicely with
 * [CoffeeScript Gem][coffee-gem] and therefore [execjs][]
 * [Rack][rack]
 
-## Thanks
-
-* Jeremy Ashkenas, for creating CoffeeScript
-* Brian Mitchell, for picking up the slack on handling the 0.5 update
-
 ## History
+
+* March 28, 2014:
+    Release 1.0.3. Requests now return a Content-Length header, and are
+    therefore valid without needing something like Rack::ContentLength. Thanks
+    to [Naksu](https://github.com/naksu) for the fix.
 
 * August 14, 2013:
     Release 1.0.2. Fixes a bug whereby bad things happen when the cache-compile
